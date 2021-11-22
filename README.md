@@ -6,7 +6,11 @@
 3 Stage - 작은별		
 4 Stage - 아기상어		
 5 Stage	- 나의 마음을 담아
-6 Stage - 
+6 Stage - 검정고무신
+7 Stage -
+8 Stage -
+9 Stage -
+10 Stage -
 ```
 \
 <img src = "https://user-images.githubusercontent.com/79827366/135713202-20459f0a-0a1e-4156-8e2b-c46150175e8f.PNG" width="48%" height="48%">
