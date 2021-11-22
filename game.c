@@ -5,7 +5,7 @@
 #include "map.h"
 
 bool isPlay = false;
-bool developerMode = false;	// <<< default = false >>>
+bool developerMode = true;	// <<< default = false >>>
 bool isFirst = true;
 bool getHealth = false;
 bool isEnding = false;
@@ -85,6 +85,13 @@ void stageControl() {
 		stageLen = sizeof(stage_6) / sizeof(stage_6[0]);
 		xpos = stage[moveIndex][1];
 		ypos = stage[moveIndex][0] + 1;
+		break;
+	case 7:
+		memcpy(stage, stage_7, sizeof(stage_7));
+		memcpy(sound, sound_7, sizeof(sound_7));
+		stageLen = sizeof(stage_7) / sizeof(stage_7[0]);
+		xpos = stage[moveIndex][1] - 2;
+		ypos = stage[moveIndex][0];
 		break;
 	}
 }
@@ -214,8 +221,8 @@ int drawMenu() {
 			break;
 
 		case ENTER:
-			noteSound(7);
-			noteSound(9);
+			noteSound(12);
+			noteSound(15);
 			currentKey = NOTHING;
 			return menuYos - 12;
 		}
@@ -579,8 +586,8 @@ void failed() {
 		keyControl();
 		if (currentKey == ENTER) {
 			Sleep(50);
-			noteSound(9);
-			noteSound(7);
+			noteSound(15);
+			noteSound(12);
 			break;
 		}
 		Sleep(120);
@@ -911,15 +918,15 @@ void drawInfo() {
 	printf("                       ");
 	setColor(Light_Yellow, Black);  printf("♬"); setColor(Bright_White, Black); printf(" = "); setColor(Light_Red, Black); printf("♥"); setColor(Bright_White, Black); printf(" + 1");
 	printf("\n\n\n");
-	setColor(Bright_White, Black); printf("                   BestScore: [ %d ]\n\n\n", bestScore);
-	setColor(Bright_White, Black);  printf("                제작자: "); printf("dgf0000"); setColor(White, Black); printf("@"); setColor(Light_Green, Black); printf("naver.com\n\n");
+	setColor(Bright_White, Black); printf("                    BestScore [ "); setColor(Light_Yellow, Black); printf("%d", bestScore); setColor(Bright_White, Black); printf(" ] \n\n\n");
+	setColor(Bright_White, Black);  printf("            제작자 : 이배원 - "); printf("dgf0000"); setColor(Light_Green, Black); printf("@naver.com\n\n\n");
 	setColor(Bright_White, Black);  printf("                       >  확   인");
 
 	while (1) {
 		keyControl();
 		if (currentKey == ENTER) {
-			noteSound(9);
-			noteSound(7);
+			noteSound(15);
+			noteSound(12);
 			break;
 		}
 	}
