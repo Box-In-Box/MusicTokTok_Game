@@ -5,7 +5,7 @@
 #include "map.h"
 
 bool isPlay = false;
-bool developerMode = true;	// <<< default = false >>>
+bool developerMode = false;	// <<< default = false >>>
 bool isFirst = true;
 bool getHealth = false;
 bool isEnding = false;
@@ -426,7 +426,7 @@ void update() {
 //Remove Player Character
 void removePlayer() {
 	//for first move
-	if (moveIndex == 0) { 
+	if (moveIndex == 0) {
 		gotoxy(xpos, ypos);
 		printf("  ");
 	}
@@ -595,21 +595,21 @@ void failed() {
 			count = 0;
 		if (soundIndex == 0) {
 			switch (failedSoundCount[count++]) {
-				case 0:
-					memcpy(sound, failedSound_0, sizeof(failedSound_0));
-					break;
-				case 1:
-					memcpy(sound, failedSound_1, sizeof(failedSound_1));
-					break;
-				case 2:
-					memcpy(sound, failedSound_2, sizeof(failedSound_2));
-					break;
-				case 3:
-					memcpy(sound, failedSound_3, sizeof(failedSound_3));
-					break;
-				case 4:
-					memcpy(sound, failedSound_4, sizeof(failedSound_4));
-					break;
+			case 0:
+				memcpy(sound, failedSound_0, sizeof(failedSound_0));
+				break;
+			case 1:
+				memcpy(sound, failedSound_1, sizeof(failedSound_1));
+				break;
+			case 2:
+				memcpy(sound, failedSound_2, sizeof(failedSound_2));
+				break;
+			case 3:
+				memcpy(sound, failedSound_3, sizeof(failedSound_3));
+				break;
+			case 4:
+				memcpy(sound, failedSound_4, sizeof(failedSound_4));
+				break;
 			}
 		}
 		_beginthreadex(NULL, 0, (_beginthreadex_proc_type)noteSound, (int*)sound[soundIndex], 0, NULL);
@@ -650,7 +650,7 @@ void ending() {
 			isEnding = false;
 			Sleep(50);
 			break;
-		}		
+		}
 
 		Sleep(130);
 		sleepCount++;
@@ -772,7 +772,7 @@ void newBestScore(int totalScore) {
 	if (totalscoreCount == 8)
 		totalscoreCount = 0;
 	switch (totalscoreCount) {
-	gotoxy(40, 18);
+		gotoxy(40, 18);
 	case 0:
 		setColor(Red, Black);			printf("N");
 		setColor(Light_Red, Black);		printf("e");
@@ -892,7 +892,7 @@ void getScore() {
 		bestScore = 0;
 	}
 	else {
-		fscanf(file, "%d", &bestScore);
+		int test = fscanf(file, "%d", &bestScore);
 		fclose(file);
 	}
 }

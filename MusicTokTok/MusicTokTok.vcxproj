@@ -18,22 +18,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="game.c" />
-    <ClCompile Include="main.c" />
-    <ClCompile Include="map.c" />
-    <ClCompile Include="util.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="game.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="map.h" />
-    <ClInclude Include="util.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{784c15b6-fbd0-4b5b-aa0d-978b6d71531d}</ProjectGuid>
+    <ProjectGuid>{981412ba-7c89-45ec-b3b6-d44ef1db09c8}</ProjectGuid>
     <RootNamespace>MusicTokTok</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -150,6 +138,18 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="game.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="map.c" />
+    <ClCompile Include="util.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="game.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="util.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
