@@ -12,6 +12,8 @@ int stage_4[33][3];
 int stage_5[37][3];
 int stage_6[44][3];
 int stage_7[56][3];
+int stage_8[70][3];
+
 
 int menuSound_1[32];
 

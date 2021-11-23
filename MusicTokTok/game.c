@@ -24,15 +24,15 @@ int health = 3;
 int healthPos[5][2];		//max health is 5
 
 double leftTime = 10;
-double leftTimes[6] = { 10, 11, 12, 13, 14, 15 };
+double leftTimes[8] = { 10, 11, 14, 15, 16, 17, 20, 23 };
 
 //Player Position
 int xpos = 0;
 int ypos = 0;
 
 //Current Stage, Sound
-int stage[100][3];
-int sound[100];
+int stage[70][3];
+int sound[70];
 int menuSound[32];
 
 //if added a stage, Need edit it
@@ -93,6 +93,13 @@ void stageControl() {
 		xpos = stage[moveIndex][1] - 2;
 		ypos = stage[moveIndex][0];
 		break;
+	case 8:
+		memcpy(stage, stage_8, sizeof(stage_8));
+		memcpy(sound, sound_8, sizeof(sound_8));
+		stageLen = sizeof(stage_8) / sizeof(stage_8[0]);
+		xpos = stage[moveIndex][1] + 2;
+		ypos = stage[moveIndex][0];
+		break;
 	}
 }
 
@@ -111,8 +118,11 @@ void keyControl() {
 	if (GetAsyncKeyState(VK_DOWN) & 0x0001) {
 		currentKey = DOWN;
 	}
-	if (GetAsyncKeyState(VK_SPACE) & 0x0001) {
+	if (GetAsyncKeyState(VK_SPACE) & 0x0001 || GetAsyncKeyState(VK_RETURN) & 0x0001) {
 		currentKey = ENTER;
+	}
+	if (GetAsyncKeyState(VK_ESCAPE) & 0x0001) {
+		currentKey = ESCAPE;
 	}
 }
 
@@ -408,6 +418,10 @@ void update() {
 			soundIndex++;
 			currentKey = NOTHING;
 			break;
+		case ESCAPE:
+			isPlay = false;
+			currentKey = NOTHING;
+			break;
 		case NOTHING:
 			break;
 		}
@@ -512,6 +526,11 @@ void nextStage() {
 				drawUi();
 				break;
 			}
+			else if (currentKey == ESCAPE) {
+				isPlay = false;
+				break;
+			}
+				
 		}
 	}
 }
@@ -584,7 +603,7 @@ void failed() {
 
 	while (1) {
 		keyControl();
-		if (currentKey == ENTER) {
+		if (currentKey == ENTER || currentKey == ESCAPE) {
 			Sleep(50);
 			noteSound(15);
 			noteSound(12);
@@ -645,14 +664,14 @@ void ending() {
 	reset();
 	while (1) {
 		keyControl();
-		if (!endingcreditplaying && currentKey == ENTER) {
+		if (!endingcreditplaying && currentKey == ENTER || currentKey == ESCAPE) {
 			leftTime = 10;		//스페이스바 누르자마자 실패되는것 방지
 			isEnding = false;
 			Sleep(50);
 			break;
 		}
 
-		Sleep(130);
+		Sleep(150);
 		sleepCount++;
 
 		_beginthreadex(NULL, 0, (_beginthreadex_proc_type)noteSound, (int*)endingSound[soundIndex], 0, NULL);
@@ -666,12 +685,8 @@ void ending() {
 			gotoxy(41, 18);
 			newBestScore(totalScore); //Twinkle Score
 		}
-		else {
-			gotoxy(44, 18);
-			setColor(Light_Yellow, Black); printf("Score"); setColor(White, Black);  printf(" : %d", totalScore); //normal Score
-		}
 
-		if (sleepCount % 8 == 0 && line < 44) {
+		if (sleepCount % 8 == 0 && line < 40) {
 			system("cls");
 
 			if (totalScore >= bestScore) {
@@ -703,58 +718,50 @@ void ending() {
 			}
 			if (line >= 9 && creditsYpos > -11) {
 				gotoxy(creditsXpos - 5, creditsYpos + 15);
-				setColor(Light_Yellow, Black); printf("1스테이지"); setColor(Bright_White, Black); printf(" - 옹달샘");
+				setColor(Light_Yellow, Black); printf("1스테이지"); setColor(Bright_White, Black); printf(" : 옹달샘");
 			}
 			if (line >= 11 && creditsYpos > -13) {
 				gotoxy(creditsXpos - 6, creditsYpos + 17);
-				setColor(Light_Yellow, Black); printf("2스테이지"); setColor(Bright_White, Black); printf(" - 똑같아요");
+				setColor(Light_Yellow, Black); printf("2스테이지"); setColor(Bright_White, Black); printf(" : 똑같아요");
 			}
 			if (line >= 13 && creditsYpos > -15) {
 				gotoxy(creditsXpos - 5, creditsYpos + 19);
-				setColor(Light_Yellow, Black); printf("3스테이지"); setColor(Bright_White, Black); printf(" - 작은별");
+				setColor(Light_Yellow, Black); printf("3스테이지"); setColor(Bright_White, Black); printf(" : 작은별");
 			}
 			if (line >= 15 && creditsYpos > -17) {
 				gotoxy(creditsXpos - 6, creditsYpos + 21);
-				setColor(Light_Yellow, Black); printf("4스테이지"); setColor(Bright_White, Black); printf(" - 아기상어");
+				setColor(Light_Yellow, Black); printf("4스테이지"); setColor(Bright_White, Black); printf(" : 아기상어");
 			}
 			if (line >= 17 && creditsYpos > -19) {
-				gotoxy(creditsXpos - 10, creditsYpos + 23);
-				setColor(Light_Yellow, Black); printf("5스테이지"); setColor(Bright_White, Black); printf(" - 나의 마음을 담아");
+				gotoxy(creditsXpos - 14, creditsYpos + 23);
+				setColor(Light_Yellow, Black); printf("5스테이지"); setColor(Bright_White, Black); printf(" : 달빛천사 - 나의 마음을 담아");
 			}
 			if (line >= 19 && creditsYpos > -21) {
-				gotoxy(creditsXpos - 7, creditsYpos + 25);
-				setColor(Light_Yellow, Black); printf("6스테이지"); setColor(Bright_White, Black); printf(" - 검정고무신");
+				gotoxy(creditsXpos - 11, creditsYpos + 25);
+				setColor(Light_Yellow, Black); printf("6스테이지"); setColor(Bright_White, Black); printf(" : 검정고무신 - 검정고무신");
 			}
 			if (line >= 21 && creditsYpos > -23) {
-				gotoxy(creditsXpos - 7, creditsYpos + 27);
-				setColor(Light_Yellow, Black); printf("7스테이지"); setColor(Bright_White, Black); printf(" - ");
+				gotoxy(creditsXpos - 18, creditsYpos + 27);
+				setColor(Light_Yellow, Black); printf("7스테이지"); setColor(Bright_White, Black); printf(" : 카트캡터 체리 - Catch You Catch Me");
 			}
 			if (line >= 23 && creditsYpos > -25) {
-				gotoxy(creditsXpos - 7, creditsYpos + 29);
-				setColor(Light_Yellow, Black); printf("8스테이지"); setColor(Bright_White, Black); printf(" - ");
+				gotoxy(creditsXpos - 10, creditsYpos + 29);
+				setColor(Light_Yellow, Black); printf("8스테이지"); setColor(Bright_White, Black); printf(" : 이누야샤 - I am");
 			}
-			if (line >= 25 && creditsYpos > -27) {
-				gotoxy(creditsXpos - 7, creditsYpos + 31);
-				setColor(Light_Yellow, Black); printf("9스테이지"); setColor(Bright_White, Black); printf(" - ");
+			if (line >= 26 && creditsYpos > -28) {
+				gotoxy(creditsXpos - 7, creditsYpos + 32);
+				setColor(Light_Yellow, Black); printf("실패곡"); setColor(Bright_White, Black); printf(" : Pink Soldiers");
 			}
-			if (line >= 27 && creditsYpos > -29) {
-				gotoxy(creditsXpos - 7, creditsYpos + 33);
-				setColor(Light_Yellow, Black); printf("10스테이지"); setColor(Bright_White, Black); printf(" - ");
+			if (line >= 28 && creditsYpos > -30) {
+				gotoxy(creditsXpos - 8, creditsYpos + 34);
+				setColor(Light_Yellow, Black); printf("엔딩곡"); setColor(Bright_White, Black); printf(" : 밋치리네코 행진");
 			}
-			if (line >= 30 && creditsYpos > -32) {
-				gotoxy(creditsXpos - 8, creditsYpos + 36);
-				setColor(Light_Yellow, Black); printf("실패곡"); setColor(Bright_White, Black); printf(" - Pink Soldiers");
-			}
-			if (line >= 32 && creditsYpos > -34) {
-				gotoxy(creditsXpos - 8, creditsYpos + 38);
-				setColor(Light_Yellow, Black); printf("엔딩곡"); setColor(Bright_White, Black); printf(" - 밋치리네코 행진");
-			}
-			if (line >= 38 && line < 43) {
-				gotoxy(creditsXpos - 5, creditsYpos + 44);
+			if (line >= 34 && line < 39) {
+				gotoxy(creditsXpos - 5, creditsYpos + 40);
 				printf("Thank you for play");
 			}
-			if (line == 43) {
-				gotoxy(creditsXpos - 5, creditsYpos + 45);
+			if (line == 39) {
+				gotoxy(creditsXpos - 5, creditsYpos + 41);
 				printf("Thank you for play"); setColor(Light_Red, Black); printf("!");
 				gotoxy(23, 14);
 				setColor(Gray, Black);
@@ -892,7 +899,7 @@ void getScore() {
 		bestScore = 0;
 	}
 	else {
-		int test = fscanf(file, "%d", &bestScore);
+		fscanf(file, "%d", &bestScore);
 		fclose(file);
 	}
 }
@@ -924,7 +931,7 @@ void drawInfo() {
 
 	while (1) {
 		keyControl();
-		if (currentKey == ENTER) {
+		if (currentKey == ENTER || currentKey == ESCAPE) {
 			noteSound(15);
 			noteSound(12);
 			break;

@@ -10,6 +10,7 @@
 #define ENTER 4
 #define ENTER_GOLD 5
 #define NOTHING 6
+#define ESCAPE 10
 #endif
 
 void keyControl();
