@@ -5,18 +5,18 @@
 #include "map.h"
 
 bool isPlay = false;
-bool developerMode = false;	// <<< default = false >>>
+bool developerMode = false;	// <<< default = false >>>	//개발 확인 옵션 true : 체력이 줄지 않음, 다른 키를 눌러도 맞은 판정, 타이머 over 없음
 bool isFirst = true;
 bool getHealth = false;
-bool isEnding = false;
+bool isEnding = false;		//
 bool endingcreditplaying = false;
 
-int moveIndex = 0;			//position value
-int stageLevel = 1;			//current level
+int moveIndex = 0;			//position value	//스테이지가 시작되고 움직인 횟수
+int stageLevel = 1;			//current level		//현재 스테이지 레벨_스테이지 관리
 int score = 0;				//current score
-int stageLen = 0;			//current stage length	
-int soundIndex = 0;			//current sound
-int currentKey = 5;			//current inputKey
+int stageLen = 0;			//current stage length	//스테이지 끝을 알기위함
+int soundIndex = 0;			//current sound			//현재 나와야될 소리 관리
+int currentKey = 5;			//current inputKey		//현재 눌려지고 있는 키
 
 int bestScore = 0;
 
@@ -24,15 +24,15 @@ int health = 3;
 int healthPos[5][2];		//max health is 5
 
 double leftTime = 10;
-double leftTimes[8] = { 10, 11, 14, 15, 16, 17, 20, 23 };
+double leftTimes[9] = { 9.5, 10.5, 13, 14, 14.8, 16.5, 19.6, 22.7, 24 }; //1stage => 0.5sec -- 0.25sec
 
 //Player Position
 int xpos = 0;
 int ypos = 0;
 
 //Current Stage, Sound
-int stage[70][3];
-int sound[70];
+int stage[100][3];
+int sound[100];
 int menuSound[32];
 
 //if added a stage, Need edit it
@@ -100,22 +100,29 @@ void stageControl() {
 		xpos = stage[moveIndex][1] + 2;
 		ypos = stage[moveIndex][0];
 		break;
+	case 9:
+		memcpy(stage, stage_9, sizeof(stage_9));
+		memcpy(sound, sound_9, sizeof(sound_9));
+		stageLen = sizeof(stage_9) / sizeof(stage_9[0]);
+		xpos = stage[moveIndex][1] + 2;
+		ypos = stage[moveIndex][0] - 1;
+		break;
 	}
 }
 
 //GetKey
 void keyControl() {
 	currentKey = NOTHING;
-	if (GetAsyncKeyState(VK_UP) & 0x0001) {
+	if (GetAsyncKeyState(VK_UP) & 0x0001 || GetAsyncKeyState(0x57) & 0x0001) {
 		currentKey = UP;
 	}
-	if (GetAsyncKeyState(VK_LEFT) & 0x0001) {
+	if (GetAsyncKeyState(VK_LEFT) & 0x0001 || GetAsyncKeyState(0x41) & 0x0001) {
 		currentKey = LEFT;
 	}
-	if (GetAsyncKeyState(VK_RIGHT) & 0x0001) {
+	if (GetAsyncKeyState(VK_RIGHT) & 0x0001 || GetAsyncKeyState(0x44) & 0x0001) {
 		currentKey = RIGHT;
 	}
-	if (GetAsyncKeyState(VK_DOWN) & 0x0001) {
+	if (GetAsyncKeyState(VK_DOWN) & 0x0001 || GetAsyncKeyState(0x53) & 0x0001) {
 		currentKey = DOWN;
 	}
 	if (GetAsyncKeyState(VK_SPACE) & 0x0001 || GetAsyncKeyState(VK_RETURN) & 0x0001) {
@@ -487,7 +494,7 @@ void setLeftHealth() {
 //Player Move
 void move() {
 	if (health == 0)
-		removePlayer();
+		removePlayer();	//움직이기 전 플레이어의 위치에 체력을 그려야 하기 때문에 플레이어를 안지워도 무방
 	else
 		removeHealth();
 
@@ -686,7 +693,7 @@ void ending() {
 			newBestScore(totalScore); //Twinkle Score
 		}
 
-		if (sleepCount % 8 == 0 && line < 40) {
+		if (sleepCount % 8 == 0 && line < 43) {
 			system("cls");
 
 			if (totalScore >= bestScore) {
@@ -748,20 +755,28 @@ void ending() {
 				gotoxy(creditsXpos - 10, creditsYpos + 29);
 				setColor(Light_Yellow, Black); printf("8스테이지"); setColor(Bright_White, Black); printf(" : 이누야샤 - I am");
 			}
-			if (line >= 26 && creditsYpos > -28) {
-				gotoxy(creditsXpos - 7, creditsYpos + 32);
+			if (line >= 25 && creditsYpos > -27) {
+				gotoxy(creditsXpos - 17, creditsYpos + 31);
+				setColor(Light_Yellow, Black); printf("9스테이지"); setColor(Bright_White, Black); printf(" : 꽃보다 남자 - 내 머리가 나빠서");
+			}
+			if (line >= 27 && creditsYpos > -29) {
+				gotoxy(creditsXpos - 10, creditsYpos + 33);
+				setColor(Light_Yellow, Black); printf("10스테이지"); setColor(Bright_White, Black); printf(" : ??? - ??");
+			}
+			if (line >= 29 && creditsYpos > -31) {
+				gotoxy(creditsXpos - 7, creditsYpos + 35);
 				setColor(Light_Yellow, Black); printf("실패곡"); setColor(Bright_White, Black); printf(" : Pink Soldiers");
 			}
-			if (line >= 28 && creditsYpos > -30) {
-				gotoxy(creditsXpos - 8, creditsYpos + 34);
+			if (line >= 31 && creditsYpos > -33) {
+				gotoxy(creditsXpos - 8, creditsYpos + 37);
 				setColor(Light_Yellow, Black); printf("엔딩곡"); setColor(Bright_White, Black); printf(" : 밋치리네코 행진");
 			}
-			if (line >= 34 && line < 39) {
-				gotoxy(creditsXpos - 5, creditsYpos + 40);
+			if (line >= 37 && line < 42) {
+				gotoxy(creditsXpos - 5, creditsYpos + 43);
 				printf("Thank you for play");
 			}
-			if (line == 39) {
-				gotoxy(creditsXpos - 5, creditsYpos + 41);
+			if (line == 42) {
+				gotoxy(creditsXpos - 5, creditsYpos + 44);
 				printf("Thank you for play"); setColor(Light_Red, Black); printf("!");
 				gotoxy(23, 14);
 				setColor(Gray, Black);
@@ -774,7 +789,7 @@ void ending() {
 	}
 }
 
-void newBestScore(int totalScore) {
+void newBestScore(int totalScore) {	//엔딩 함수에서 계속 부르면 static 변수를 선언하였기 때문에 newscore의 색깔이 계속 바뀜
 	static totalscoreCount = 0;
 	if (totalscoreCount == 8)
 		totalscoreCount = 0;
