@@ -9,6 +9,7 @@
 6 Stage - 검정고무신 - 검정고무신
 7 Stage - 카드캡터 체리 - Catch You Catch Me
 8 Stage - 이누야샤 - I am
+9 Stage - 꽃보다 남자 - 내 머리가 나빠서
 ```
 \
 <img src = "https://user-images.githubusercontent.com/79827366/135713202-20459f0a-0a1e-4156-8e2b-c46150175e8f.PNG" width="48%" height="48%">
