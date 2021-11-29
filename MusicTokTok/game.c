@@ -5,7 +5,7 @@
 #include "map.h"
 
 bool isPlay = false;
-bool developerMode = false;	// <<< default = false >>>	//개발 확인 옵션 true : 체력이 줄지 않음, 다른 키를 눌러도 맞은 판정, 타이머 over 없음
+bool developerMode = true;	// <<< default = false >>>	//개발 확인 옵션 true : 체력이 줄지 않음, 다른 키를 눌러도 맞은 판정, 타이머 over 없음
 bool isFirst = true;
 bool getHealth = false;
 bool isEnding = false;		//
@@ -24,7 +24,7 @@ int health = 3;
 int healthPos[5][2];		//max health is 5
 
 double leftTime = 10;
-double leftTimes[9] = { 9.5, 10.5, 13, 14, 14.8, 16.5, 19.6, 22.7, 24 }; //1stage => 0.5sec -- 0.25sec
+double leftTimes[10] = { 9.5, 10.5, 13, 14, 14.8, 16.5, 19.6, 22.7, 24, 27 }; //1stage => 0.5sec -- 0.25sec
 
 //Player Position
 int xpos = 0;
@@ -106,6 +106,13 @@ void stageControl() {
 		stageLen = sizeof(stage_9) / sizeof(stage_9[0]);
 		xpos = stage[moveIndex][1] + 2;
 		ypos = stage[moveIndex][0] - 1;
+		break;
+	case 10:
+		memcpy(stage, stage_10, sizeof(stage_10));
+		memcpy(sound, sound_10, sizeof(sound_10));
+		stageLen = sizeof(stage_10) / sizeof(stage_10[0]);
+		xpos = stage[moveIndex][1];
+		ypos = stage[moveIndex][0] + 1;
 		break;
 	}
 }
@@ -678,7 +685,7 @@ void ending() {
 			break;
 		}
 
-		Sleep(150);
+		Sleep(140);
 		sleepCount++;
 
 		_beginthreadex(NULL, 0, (_beginthreadex_proc_type)noteSound, (int*)endingSound[soundIndex], 0, NULL);
@@ -760,12 +767,12 @@ void ending() {
 				setColor(Light_Yellow, Black); printf("9스테이지"); setColor(Bright_White, Black); printf(" : 꽃보다 남자 - 내 머리가 나빠서");
 			}
 			if (line >= 27 && creditsYpos > -29) {
-				gotoxy(creditsXpos - 10, creditsYpos + 33);
-				setColor(Light_Yellow, Black); printf("10스테이지"); setColor(Bright_White, Black); printf(" : ??? - ??");
+				gotoxy(creditsXpos - 16, creditsYpos + 33);
+				setColor(Light_Yellow, Black); printf("10스테이지"); setColor(Bright_White, Black); printf(" : 비긴어게인 - A Higher Place");
 			}
 			if (line >= 29 && creditsYpos > -31) {
-				gotoxy(creditsXpos - 7, creditsYpos + 35);
-				setColor(Light_Yellow, Black); printf("실패곡"); setColor(Bright_White, Black); printf(" : Pink Soldiers");
+				gotoxy(creditsXpos - 13, creditsYpos + 35);
+				setColor(Light_Yellow, Black); printf("실패곡"); setColor(Bright_White, Black); printf(" : 오징어게임 - Pink Soldiers");
 			}
 			if (line >= 31 && creditsYpos > -33) {
 				gotoxy(creditsXpos - 8, creditsYpos + 37);
