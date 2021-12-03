@@ -1,5 +1,6 @@
 #include "main.h"
 
+//키 코드 값
 #ifndef KEY_CODE
 #define KEY_CODE
 

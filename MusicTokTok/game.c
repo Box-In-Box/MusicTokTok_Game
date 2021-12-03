@@ -1,42 +1,43 @@
-#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS //fscanf 오류 경고 메세지 제거를 위한 정의
 
 #include "game.h"
 #include "util.h"
 #include "map.h"
 
 bool isPlay = false;
-bool developerMode = true;	// <<< default = false >>>	//개발 확인 옵션 true : 체력이 줄지 않음, 다른 키를 눌러도 맞은 판정, 타이머 over 없음
-bool isFirst = true;
+bool developerMode = false;			// <<< default = false >>>	// true : 체력이 줄지 않음, 다른 키를 눌러도 맞은 판정, 타이머 over 없음
+bool developerMode_Text = false;	//현재 스테이지의 남은 개수, 현재 체력
+bool isFirst = true;				//프로그램을 처음 켜서 시작 시
 bool getHealth = false;
-bool isEnding = false;		//
+bool isEnding = false;
 bool endingcreditplaying = false;
 
-int moveIndex = 0;			//position value	//스테이지가 시작되고 움직인 횟수
-int stageLevel = 1;			//current level		//현재 스테이지 레벨_스테이지 관리
-int score = 0;				//current score
+int moveIndex = 0;			//position value		//스테이지가 시작되고 움직인 횟수
+int stageLevel = 1;			//current level			//현재 스테이지 레벨_스테이지 관리
+int score = 0;				//current score			//나의 score
 int stageLen = 0;			//current stage length	//스테이지 끝을 알기위함
 int soundIndex = 0;			//current sound			//현재 나와야될 소리 관리
 int currentKey = 5;			//current inputKey		//현재 눌려지고 있는 키
 
-int bestScore = 0;
+int bestScore = 0;			//현재 최고기록
 
-int health = 3;
-int healthPos[5][2];		//max health is 5
+int health = 3;				//기본 추가체력
+int healthPos[5][2];		//max health is 5	//추가체력 최대 개수 5개
 
-double leftTime = 10;
-double leftTimes[10] = { 9.5, 10.5, 13, 14, 14.8, 16.5, 19.6, 22.7, 24, 27 }; //1stage => 0.5sec -- 0.25sec
+double leftTime = 9.5;
+double leftTimes[10] = { 9.5, 10.5, 13, 14, 14.8, 16.5, 19.6, 22.7, 24, 27 }; //1stage => 0.5sec -- 0.025sec
 
 //Player Position
-int xpos = 0;
+int xpos = 0;		//처음 위치 조정때만 사용됨
 int ypos = 0;
 
 //Current Stage, Sound
-int stage[100][3];
-int sound[100];
-int menuSound[32];
+int stage[100][3];		//현재 스테이지
+int sound[100];			//현재 사운드
+int menuSound[32];		//for 오징어게임 ost 이스터에그
 
 //if added a stage, Need edit it
-void stageControl() {
+void stageControl() {	//현재 스테이지, 노래를 가져오는 함수, 초기위치 세팅
 
 	switch (stageLevel) {
 	case 1:
@@ -46,7 +47,7 @@ void stageControl() {
 		xpos = stage[moveIndex][1] - 2;	// - 2 = left Start, + 2 = right Start
 		ypos = stage[moveIndex][0];
 		//start health position setting
-		for (int i = 0; i < health; i++) {
+		for (int i = 0; i < health; i++) {		//처음 스테이지를 시작 할 때는 체력의 위치를 정해줘야 함
 			healthPos[i][0] = xpos - (2 * (i + 1));
 			healthPos[i][1] = ypos;
 		}
@@ -118,18 +119,18 @@ void stageControl() {
 }
 
 //GetKey
-void keyControl() {
+void keyControl() {		//키 입력 컨트롤러
 	currentKey = NOTHING;
-	if (GetAsyncKeyState(VK_UP) & 0x0001 || GetAsyncKeyState(0x57) & 0x0001) {
+	if (GetAsyncKeyState(VK_UP) & 0x0001 || GetAsyncKeyState(0x57) & 0x0001) {		//0x57 == w    //for 왼손잡이
 		currentKey = UP;
 	}
-	if (GetAsyncKeyState(VK_LEFT) & 0x0001 || GetAsyncKeyState(0x41) & 0x0001) {
+	if (GetAsyncKeyState(VK_LEFT) & 0x0001 || GetAsyncKeyState(0x41) & 0x0001) {	//0x57 == a
 		currentKey = LEFT;
 	}
-	if (GetAsyncKeyState(VK_RIGHT) & 0x0001 || GetAsyncKeyState(0x44) & 0x0001) {
+	if (GetAsyncKeyState(VK_RIGHT) & 0x0001 || GetAsyncKeyState(0x44) & 0x0001) {	//0x57 == d
 		currentKey = RIGHT;
 	}
-	if (GetAsyncKeyState(VK_DOWN) & 0x0001 || GetAsyncKeyState(0x53) & 0x0001) {
+	if (GetAsyncKeyState(VK_DOWN) & 0x0001 || GetAsyncKeyState(0x53) & 0x0001) {	//0x57 == s
 		currentKey = DOWN;
 	}
 	if (GetAsyncKeyState(VK_SPACE) & 0x0001 || GetAsyncKeyState(VK_RETURN) & 0x0001) {
@@ -141,7 +142,7 @@ void keyControl() {
 }
 
 //Draw Title
-void drawTitle() {
+void drawTitle() {	//메인 화면 타이틀 그림
 	printf("\n\n\n\n");
 	setColor(Light_Red, Black); printf("       ##     ##   "); setColor(Light_Yellow, Black); printf("#    #   "); setColor(Light_Green, Black); printf(" #####   ");  setColor(Light_Blue, Black); printf("#####   "); setColor(Light_Purple, Black); printf(" ###       \n");
 	setColor(Light_Red, Black); printf("        # # # #    "); setColor(Light_Yellow, Black); printf("#    #   "); setColor(Light_Green, Black); printf("#        ");  setColor(Light_Blue, Black); printf("  #     "); setColor(Light_Purple, Black); printf("#   #      \n");
@@ -151,7 +152,7 @@ void drawTitle() {
 	setColor(Bright_White, Black);
 }
 //Draw Menu
-int drawMenu() {
+int drawMenu() {	//메인 화면 키 조작 
 
 	int menuXos = 25;
 	int menuYos = 12;
@@ -168,7 +169,7 @@ int drawMenu() {
 	gotoxy(menuXos, menuYos + 2);
 	printf("  종료  ");
 
-	while (1) {
+	while (1) {		//키 입력 시 '>'이동과 다른 글자들을 음영 처리를 위한 설정
 		keyControl();
 		switch (currentKey) {
 		case UP:
@@ -248,13 +249,13 @@ int drawMenu() {
 			noteSound(12);
 			noteSound(15);
 			currentKey = NOTHING;
-			return menuYos - 12;
+			return menuYos - 12;	//초기값이 12이기 때문에 현재 선택된 값에서 12를 빼주면 게임시작 = 0, 게임정보 = 1, 종료 = 2가 됨
 		}
 	}
 }
 
 //Draw Map
-void drawMap() {
+void drawMap() {	//문자를 그림으로 바꿔주는 함수
 	system("cls");
 	int h, w;
 	//UI
@@ -283,7 +284,7 @@ void drawMap() {
 	}
 }
 //Draw Stage
-void drawStage() {
+void drawStage() {	//화면에 해당 스테이지를 그리는 함수
 	srand(time(NULL));
 
 	//Sgtage Setting - get current stage
@@ -323,7 +324,7 @@ void drawStage() {
 			printf("→");
 			break;
 		case 4:
-			random = rand() % 8;
+			random = rand() % 8;		//추가체력 확률
 			gotoxy(stage[index][1], stage[index][0]);
 			if (random == 0) {
 				setColor(Light_Yellow, Black);
@@ -340,27 +341,26 @@ void drawStage() {
 }
 
 //Game Loop
-void update() {
+void update() {	//main에서 게임 시작 시 이 함수로 넘어오며 이 루프를 반복하게 됨
 	isPlay = true;
-	drawMap();
-	drawStage();
-	drawHealth();
-	againTimerSet();
+	drawMap();			//맵을 그림
+	drawStage();		//스테이지를 그림
+	drawHealth();		//체력들을 그림
+	againTimerSet();	//타이머 설정
 	if (isFirst) {
 		_beginthreadex(NULL, 0, (_beginthreadex_proc_type)timer, NULL, 0, NULL);
 		isFirst = false;
 	}
 	while (isPlay) {
 		keyControl();
-		//please check the developerMode is false, it is a developer option
 		switch (currentKey) {
 		case UP:
-			if (stage[moveIndex][2] == UP || developerMode) {
+			if (stage[moveIndex][2] == UP || developerMode) {	//알맞은 방향키를 입력 시
 				_beginthreadex(NULL, 0, (_beginthreadex_proc_type)noteSound, (int*)sound[soundIndex], 0, NULL);
 				score++;
 			}
-			else {
-				_beginthreadex(NULL, 0, (_beginthreadex_proc_type)noteSound, (int*)30, 0, NULL);
+			else {												//잘못된 방향키를 입력 시
+				_beginthreadex(NULL, 0, (_beginthreadex_proc_type)noteSound, (int*)30, 0, NULL);	//note sound 30 = 틀렸을 때 소리
 				removeHealth();
 				health--;
 			}
@@ -432,7 +432,7 @@ void update() {
 			soundIndex++;
 			currentKey = NOTHING;
 			break;
-		case ESCAPE:
+		case ESCAPE:		//esc를 누를 시 게임 탈출
 			isPlay = false;
 			currentKey = NOTHING;
 			break;
@@ -440,11 +440,11 @@ void update() {
 			break;
 		}
 		drawUi();
-		if (moveIndex == stageLen) {
-			score += (int)(leftTime * 10);
-			nextStage();
+		if (moveIndex == stageLen) {		//현재 스테이지가 끝났을 때
+			score += (int)(leftTime * 10);	//스코어 += 남은시간 * 10
+			nextStage();					//다음 스테이지로 이동
 		}
-		if (health < 0 && !developerMode || leftTime <= 0 && !isEnding && !developerMode) {
+		if (health < 0 && !developerMode || leftTime <= 0 && !isEnding && !developerMode) {	//실패엔딩
 			failed();
 		}
 	}
@@ -452,7 +452,7 @@ void update() {
 }
 
 //Remove Player Character
-void removePlayer() {
+void removePlayer() {	//방향키 입력시 캐릭터 있던 자리를 비우는 함수
 	//for first move
 	if (moveIndex == 0) {
 		gotoxy(xpos, ypos);
@@ -465,7 +465,7 @@ void removePlayer() {
 	}
 }
 //Remove last health
-void removeHealth() {
+void removeHealth() {	//추가체력 있던 곳의 자리를 비우는 함수
 	if (getHealth) {	//체력을 먹었다면 플레이어가 이동하면서 자리가 비기 때문에 체력을 지울 필요 없음
 		getHealth = false;
 		return;
@@ -474,7 +474,7 @@ void removeHealth() {
 	printf("  ");
 }
 //Remove all health
-void removeAllHealth() {	//스테이지 클리어에 필요
+void removeAllHealth() {	//스테이지 클리어 시 SPACE  TO  NEXT을 출력해주어야 하므로 체력들을 전부 지워주는 함수
 	for (int i = 0; i < health; i++) {
 		gotoxy(healthPos[i][0], healthPos[i][1]);
 		printf("  ");
@@ -482,7 +482,7 @@ void removeAllHealth() {	//스테이지 클리어에 필요
 }
 
 //Setting Health Position
-void setLeftHealth() {
+void setLeftHealth() {		//체력들의 위치를 재조정 하는 함수
 	for (int i = health - 1; i > 0; i--) {
 		healthPos[i][0] = healthPos[i - 1][0];
 		healthPos[i][1] = healthPos[i - 1][1];
@@ -499,7 +499,7 @@ void setLeftHealth() {
 }
 
 //Player Move
-void move() {
+void move() {		//방향키 입력을 받을 시 실행되는 함수
 	if (health == 0)
 		removePlayer();	//움직이기 전 플레이어의 위치에 체력을 그려야 하기 때문에 플레이어를 안지워도 무방
 	else
@@ -514,9 +514,9 @@ void move() {
 }
 
 //Next - stage Clear
-void nextStage() {
+void nextStage() {	//스테이지 클리어시 실행된는 함수
 	//ending
-	if (stageLevel == maxLevel)
+	if (stageLevel == maxLevel)	//마지막 스테이지 클리어시 엔딩으로 넘어감
 		ending();
 	//nextStage
 	else {
@@ -544,12 +544,12 @@ void nextStage() {
 				isPlay = false;
 				break;
 			}
-				
+
 		}
 	}
 }
 
-void timer() {
+void timer() {	//쉬운 구성을 위해 타이머는 Sleep으로 구현, 쓰레드로 이 함수를 호출
 	while (1) {
 		Sleep(100);
 		leftTime -= 0.1;
@@ -557,7 +557,7 @@ void timer() {
 }
 
 //Ui Draw
-void drawUi() {
+void drawUi() {	//화면 위쪽에 제공되는 현재 스테이지, 남은시간, 현재 스코어가 제공됨
 	setColor(Light_Red, Black);
 	gotoxy(6, 2);
 	printf("STAGE : %d", stageLevel);
@@ -568,16 +568,18 @@ void drawUi() {
 	gotoxy(44, 2);
 	printf("SCORE : %d", score);
 
-	//[Test] Show Health To Text
-	/*
-	setColor(Light_Green, Black);
-	gotoxy(46, 18);
-	printf("Health : %d", health);
-	*/
+	//[Test] Show Health, Left To Text
+	if (developerMode_Text) {
+		setColor(Light_Green, Black);
+		gotoxy(32, 18);
+		printf("Left : %2d", stageLen - moveIndex);
+		gotoxy(45, 18);
+		printf("Health : %d", health);
+	}
 }
 
 //Health Draw
-void drawHealth() {
+void drawHealth() {		//체력들을 그려주는 함수
 	for (int i = 0; i < health; i++) {
 		setColor(Light_Red, Black);
 		gotoxy(healthPos[i][0], healthPos[i][1]);
@@ -586,7 +588,7 @@ void drawHealth() {
 }
 
 //Values initialization
-void reset() {
+void reset() {	//게임이 끝날 시 변수들을 리셋 해주는 함수
 	isPlay = false;
 	moveIndex = 0;
 	stageLevel = 1;
@@ -600,31 +602,34 @@ void reset() {
 }
 
 
-void againTimerSet() {
+void againTimerSet() {	//스테이지 별로 타이머를 조정해주는 함수
 	leftTime = leftTimes[stageLevel - 1];
 }
 
 //Game Failed
-void failed() {
+void failed() {	//게임 실패시 실행되는 함수
 	system("cls");
 
 	reset();
 	int count = 0;
-	int failedSoundCount[16] = { 0, 1, 0, 1, 2, 1, 0, 1, 3, 4, 3, 4, 3, 4, 3, 4 };
+	int failedSoundCount[16] = { 0, 1, 0, 1, 2, 1, 0, 1, 3, 4, 3, 4, 3, 4, 3, 4 };	//같은 음이 많아 배열로 관리
 
-	gotoxy(23, 9);
-	setColor(Bright_White, Black); printf("[ "); setColor(White, Black); printf("Failed"); setColor(Gray, Black); printf("..."); setColor(Bright_White, Black); printf(" ]");
+	gotoxy(24, 9);
+	setColor(Bright_White, Black); printf("[ "); setColor(White, Black); printf("Failed"); setColor(Bright_White, Black); printf(" ]");
+	gotoxy(23, 14);
+	setColor(Gray, Black);
+	printf("Space to Menu");
 
 	while (1) {
 		keyControl();
 		if (currentKey == ENTER || currentKey == ESCAPE) {
-			Sleep(50);
 			noteSound(15);
 			noteSound(12);
+			Sleep(50);
 			break;
 		}
-		Sleep(120);
-		if (count == sizeof(failedSoundCount) / sizeof(int))
+		Sleep(120);	//노래박자
+		if (count == sizeof(failedSoundCount) / sizeof(int))		//노래 무한반복
 			count = 0;
 		if (soundIndex == 0) {
 			switch (failedSoundCount[count++]) {
@@ -653,7 +658,7 @@ void failed() {
 }
 
 //Game Ending
-void ending() {
+void ending() {	//모든 스테이지 클리어시 실행되는 함수
 	system("cls");
 
 	isEnding = true;
@@ -679,13 +684,13 @@ void ending() {
 	while (1) {
 		keyControl();
 		if (!endingcreditplaying && currentKey == ENTER || currentKey == ESCAPE) {
-			leftTime = 10;		//스페이스바 누르자마자 실패되는것 방지
+			leftTime = 10;		//엔딩이 끝나고 스페이스바 누르자마자 실패되는것 방지
 			isEnding = false;
 			Sleep(50);
 			break;
 		}
 
-		Sleep(140);
+		Sleep(140);	//노래박자
 		sleepCount++;
 
 		_beginthreadex(NULL, 0, (_beginthreadex_proc_type)noteSound, (int*)endingSound[soundIndex], 0, NULL);
@@ -700,7 +705,7 @@ void ending() {
 			newBestScore(totalScore); //Twinkle Score
 		}
 
-		if (sleepCount % 8 == 0 && line < 43) {
+		if (sleepCount % 8 == 0 && line < 43) {	//노래의 음과 크레딧이 같이 올라가기 위해 구현한 장치
 			system("cls");
 
 			if (totalScore >= bestScore) {
@@ -788,7 +793,7 @@ void ending() {
 				gotoxy(23, 14);
 				setColor(Gray, Black);
 				printf("Space to Menu");
-				endingcreditplaying = false; //Finish Endingcredit from this line //키 입력 가능
+				endingcreditplaying = false; //Finish Endingcredit from this line	//스페이스, 엔터키 입력 가능
 			}
 			creditsYpos--;
 			line++;
@@ -796,11 +801,11 @@ void ending() {
 	}
 }
 
-void newBestScore(int totalScore) {	//엔딩 함수에서 계속 부르면 static 변수를 선언하였기 때문에 newscore의 색깔이 계속 바뀜
-	static totalscoreCount = 0;
+void newBestScore(int totalScore) {	//신기록을 세울 때 엔딩함수에서 불리는 함수
+	static totalscoreCount = 0;	//엔딩 함수에서 계속 부르면 static 변수를 선언하였기 때문에 newscore의 색깔이 계속 바뀜
 	if (totalscoreCount == 8)
 		totalscoreCount = 0;
-	switch (totalscoreCount) {
+	switch (totalscoreCount) {	//색깔이 바뀌어야 되기 때문에 글자의 색깔이 swicth문으로 계속 바뀜
 		gotoxy(40, 18);
 	case 0:
 		setColor(Red, Black);			printf("N");
@@ -902,11 +907,11 @@ void newBestScore(int totalScore) {	//엔딩 함수에서 계속 부르면 static 변수를 선
 	totalscoreCount++;
 }
 
-void saveScore(const int _totalScore) {
+void saveScore(const int _totalScore) {	//엔딩시 스코어 저장
 	FILE* file;
 	file = fopen("TokTokScore.txt", "w");
 	if (file == NULL) {
-		bestScore = -1;
+		bestScore = 0;
 	}
 	else {
 		fprintf(file, "%d", _totalScore);
@@ -914,7 +919,7 @@ void saveScore(const int _totalScore) {
 	}
 }
 
-void getScore() {
+void getScore() {	//bextScore 가져오기
 	FILE* file;
 	file = fopen("TokTokScore.txt", "r");
 	if (file == NULL) {
@@ -927,7 +932,7 @@ void getScore() {
 }
 
 //Infomation
-void drawInfo() {
+void drawInfo() {	//게임 정보에를 누를 시 제공되는 함수
 	system("cls");
 	printf("\n\n\n");
 	setColor(Bright_White, Black);	printf("                        ");
@@ -956,6 +961,7 @@ void drawInfo() {
 		if (currentKey == ENTER || currentKey == ESCAPE) {
 			noteSound(15);
 			noteSound(12);
+			Sleep(50);
 			break;
 		}
 	}

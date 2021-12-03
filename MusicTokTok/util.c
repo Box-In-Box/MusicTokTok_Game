@@ -1,6 +1,6 @@
 #include "util.h"
 
-void init() {
+void init() {	//콘솔창 제어
 	system("mode con cols=58 lines=20 | title music tok tok");
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.dwSize = 1;
@@ -8,18 +8,18 @@ void init() {
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 }
 
-void gotoxy(int x, int y) {
+void gotoxy(int x, int y) {	//x, y 좌표로 이동
 	COORD pos = { x, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
-void setColor(int foreground, int background) {
+void setColor(int foreground, int background) {	//글자, 배경 색으로 설정
 	foreground &= 0xf;
 	background &= 0xf;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (background << 4) | foreground);
 }
 
-void noteSound(int note) {
+void noteSound(int note) {	//해당 비프음 출력
 	switch (note) {
 	case 0:		//mute
 		break;

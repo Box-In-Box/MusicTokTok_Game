@@ -1,6 +1,6 @@
 #include "main.h"
 
-enum COLOR_LIST {
+enum COLOR_LIST {	//컬러 리스트
 	Black,
 	Blue,
 	Green,
@@ -19,7 +19,7 @@ enum COLOR_LIST {
 	Bright_White
 };
 
-void init();
-void gotoxy(int, int);
-void setColor(int, int);
-void noteSound(int);
+void init();				//콘솔창 제어
+void gotoxy(int, int);		//x, y 좌표로 이동
+void setColor(int, int);	//글자, 배경 색으로 설정
+void noteSound(int);		//해당 비프음 출력
